@@ -20,12 +20,6 @@ Protected Class DatabaseCore
 
 	#tag Method, Flags = &h1
 		Protected Sub Constructor()
-		  // Verify proper license exists.
-		  #IF DebugBuild = FALSE THEN
-		    MsgBox("SQLdeLite is not licensed for production yet.")
-		    Quit
-		  #ENDIF
-		  
 		  // Initialize variables
 		  p_zTableCache = New Dictionary
 		End Sub

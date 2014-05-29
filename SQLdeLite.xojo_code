@@ -1,12 +1,5 @@
 #tag Module
 Protected Module SQLdeLite
-	#tag Method, Flags = &h1
-		Protected Function License() As String
-		  Return "DEMO"
-		End Function
-	#tag EndMethod
-
-
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
