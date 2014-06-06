@@ -2,9 +2,7 @@ SQLdeLite 1.0.0 beta by 1701 Software
 
 What is SQLdeLite?
 
-SQLdeLite is a low level SQL database abstraction layer for the XOJO language being actively developed here, at 1701 software.
-It's primarily focused around the things that make managing and querying your databases difficult or time consuming.
-It is designed around our experience with various database systems and our belief that heavy ORM's are not good. They tend to lock you in to a very particular way of using your databases and generally are not well optimized.
+SQLdeLite is a low level SQL database abstraction layer for the XOJO language being actively developed here, at 1701 software. It's primarily focused around the things that make managing and querying your databases difficult or time consuming. It is designed around our experience with various database systems and our belief that heavy ORM's are not good. They tend to lock you in to a very particular way of using your databases and generally are not well optimized.
 It’s designed to be a drop in replacement for the existing SQLiteDatabase and CubeSQLServer classes. All existing properties and methods should work out of the box. You will not have to change any of your existing code to start using SQLdeLite. MySQL and PostgreSQL are on the works.
 
 What it can do?
@@ -30,11 +28,8 @@ Easier Inserts:
 If you spend a lot of time inserting data into your database and have an object mapped to a SQLdeLite.Table then inserting is super easy. For instance you can do:
 
 Dim newUser As New User(myDb)
-
 newUser.Username = "testuser"
-
 newUser.Password = "hashedPassword"
-
 newUser.Insert()
 
 
