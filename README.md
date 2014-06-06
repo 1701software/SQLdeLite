@@ -12,7 +12,9 @@ What it can do?
 Prepared Statements:
 
 Currently if you wish to properly query a database you need to parameterize the query using prepared statements. Prepared statements provide both speed optimizations and protect you from SQL injection attacks. However, actually doing this for each database is a chore. SQLdeLite provides query helpers in the form of database methods (SQLdeLiteSelect and SQLdeLiteExecute) that rapidly speed up your development. You can now do something like:
+
 myDb.SQLdeLiteSelect("SELECT * FROM Users WHERE Username = #?# AND Password = #?#", txtUsername.Text, txtPassword.Text)
+
 This would return a RecordSet from your database. Behind the scenes it used prepared SQL statements appropriate for that database server to return the data.
 
 Easier table schemas management:
@@ -28,9 +30,13 @@ Easier Inserts:
 If you spend a lot of time inserting data into your database and have an object mapped to a SQLdeLite.Table then inserting is super easy. For instance you can do:
 
 Dim newUser As New User(myDb)
+
 newUser.Username = "testuser"
+
 newUser.Password = "hashedPassword"
+
 newUser.Insert()
+
 
 This is a nice little helper to save you some time. SQL Insert statements are largely the same and theres no point wasting time writing methods to insert every known possibility.
 
