@@ -28,8 +28,11 @@ Easier Inserts:
 If you spend a lot of time inserting data into your database and have an object mapped to a SQLdeLite.Table then inserting is super easy. For instance you can do:
 
 Dim newUser As New User(myDb)
+
 newUser.Username = "testuser"
+
 newUser.Password = "hashedPassword"
+
 newUser.Insert()
 
 This is a nice little helper to save you some time. SQL Insert statements are largely the same and theres no point wasting time writing methods to insert every known possibility.
