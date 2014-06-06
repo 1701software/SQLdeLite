@@ -32,7 +32,6 @@ newUser.Username = "testuser"
 newUser.Password = "hashedPassword"
 newUser.Insert()
 
-
 This is a nice little helper to save you some time. SQL Insert statements are largely the same and theres no point wasting time writing methods to insert every known possibility.
 
 Easier, standardized cross-db Prepared Statements syntax:
