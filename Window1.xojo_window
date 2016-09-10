@@ -16,7 +16,7 @@ Begin Window Window1
    MaxHeight       =   32000
    MaximizeButton  =   True
    MaxWidth        =   32000
-   MenuBar         =   344995769
+   MenuBar         =   1855350783
    MenuBarVisible  =   True
    MinHeight       =   64
    MinimizeButton  =   True
@@ -26,37 +26,36 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   600
-   Begin SQLdeLite.DatabaseCubeSQL db
-      AutoCommit      =   False
-      DatabaseName    =   ""
+   Begin PushButton PushButton1
+      AutoDeactivate  =   True
+      Bold            =   False
+      ButtonStyle     =   "0"
+      Cancel          =   False
+      Caption         =   "Button"
+      Default         =   False
       Enabled         =   True
-      Encryption      =   0
-      EndChunk        =   False
-      Error           =   False
-      ErrorCode       =   0
-      ErrorMessage    =   ""
-      Height          =   "32"
-      Host            =   ""
+      Height          =   20
+      HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      IsEndChunk      =   False
-      Left            =   40
+      Italic          =   False
+      Left            =   20
+      LockBottom      =   False
       LockedInPosition=   False
-      Password        =   ""
-      PingFrequency   =   0
-      Port            =   0
-      Scope           =   0
-      ServerVersion   =   ""
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Scope           =   2
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
-      ThreadYieldInterval=   "0"
-      Timeout         =   0
-      Top             =   40
-      UseREALServerProtocol=   False
-      Username        =   ""
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   20
+      Underline       =   False
       Visible         =   True
-      Width           =   "32"
+      Width           =   80
    End
 End
 #tag EndWindow
@@ -64,72 +63,6 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Open()
-		  // Setup Database
-		  'db.DatabaseFile = GetFolderItem("/Users/phillipzedalis/Bitbucket/1701-sqldelite/test.sqlite", FolderItem.PathTypeNative)
-		  db.Host = "localhost"
-		  db.Port = 4430
-		  db.DatabaseName = "Test"
-		  db.Username = "admin"
-		  db.Password = "admin"
-		  
-		  If (Window1.db.Connect() = True) Then
-		    
-		    db.AutoCommit = True
-		    
-		    // Insert some values into the database using the ORM-like features.
-		    Dim setting As New TestDb.Setting(Window1.db)
-		    setting.Name = "Double Test"
-		    setting.Value = App.ShortVersion
-		    setting.Insert()
-		    
-		    Dim setting2 As New TestDb.Setting(Window1.db)
-		    setting2.Name = "Bob"
-		    setting2.Value = "Villa"
-		    setting2.DoubleTest = 31.76
-		    setting2.Insert()
-		    
-		    // Let's insert a row with a date. Dates have a special event handler on the Setting object.
-		    Dim setting5 As New TestDb.Setting(Window1.db)
-		    setting5.Name = "DateTest"
-		    setting5.Value = "TestValue"
-		    setting5.UpdateDate = New Date
-		    setting5.Insert()
-		    
-		    // Use properties to send an update statement with auto bindings that replace the #?#
-		    Dim setting3 As New TestDb.Setting(Window1.db)
-		    setting3.Name = "Phillip"
-		    setting3.Value = "Programmer"
-		    setting3.execute("update setting set name = #name#, value = #value# where id = #?# and name = #?#", 5, "Bob")
-		    
-		    // Use a combination of values and manual bindings for the #?#. Manual bindings skips the cache and runs a tad faster.
-		    Dim setting4 As New TestDb.Setting(Window1.db)
-		    setting4.Value = "Awesome"
-		    setting4.execute("update setting set name = #?#, value = #value# where id = #?# and name = #?#", _
-		    New SQLdeLite.Parameter("Phillip", SQLitePreparedStatement.SQLITE_TEXT), _
-		    New SQLdeLite.Parameter(7, SQLitePreparedStatement.SQLITE_INTEGER), _
-		    New SQLdeLite.Parameter("DatabaseVersion", SQLitePreparedStatement.SQLITE_TEXT))
-		    
-		    
-		    // Query the database
-		    Dim tempRS1 As RecordSet
-		    tempRS1 = Window1.db.SQLdeLiteSelect("select * from Setting where id < #?# and id > #?#", 20, 16)
-		    
-		    // Execute a query against the database
-		    Window1.db.SQLdelIteExecute("update setting set name = #?# where id = #?#", "TEST TEST", 1)
-		    
-		    // Query the database yet again
-		    Dim tempRS2 As RecordSet
-		    tempRS2 = Window1.db.SQLdeLiteSelect("select * from setting where id > #?# and id < #?#", 0, 3)
-		    
-		    MsgBox("Done")
-		    
-		  Else
-		    
-		    MsgBox("Not connected.")
-		    
-		  End If
-		  
-		  
 		  
 		End Sub
 	#tag EndEvent
@@ -137,64 +70,67 @@ End
 
 #tag EndWindowCode
 
-#tag Events db
+#tag Events PushButton1
 	#tag Event
-		Function CreateTableSchema(TableName As String) As Boolean
-		  // Let's add the columns for the Setting table
-		  If (TableName = "Setting") Then
-		    // Create Table
-		    db.CreateTable(TableName, "ID")
-		    // Add additional columns.
-		    db.CreateTableColumn(TableName, "DoubleTest")
-		    db.CreateTableColumn(TableName, "Name")
-		    db.CreateTableColumn(TableName, "UpdateDate")
-		    db.CreateTableColumn(TableName, "Value")
-		    
-		    // Return True that we handled the creation.
-		    Return True
-		  End If
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function UpdateTableSchema(TableName As String) As Boolean
+		Sub Action()
+		  Dim _record As New SQLdeLite.Record
+		  _record.LastName = "Tremblay"
 		  
-		End Function
+		  Dim _db As New SQLiteDatabase
+		  _db.DatabaseFile = SpecialFolder.Desktop.Child("Chinook_Sqlite.sqlite")
+		  If (_db.Connect() = False) Then
+		    MsgBox("Problem opening database.")
+		    Return
+		  End If
+		  
+		  Dim _rs As RecordSet
+		  _rs = _db.SQLdeLiteSelect("SELECT * FROM Customer WHERE LastName = $LastName", _record, True)
+		  
+		  If (_rs <> Nil) Then
+		    MsgBox(_rs.RecordCount.ToText() + " Records Found")
+		  Else
+		    MsgBox("RecordSet was Nil")
+		  End If
+		  
+		  MsgBox(_record.Phone)
+		  
+		  break
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior
 	#tag ViewProperty
 		Name="BackColor"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		InitialValue="&hFFFFFF"
 		Type="Color"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Backdrop"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		Type="Picture"
 		EditorType="Picture"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="CloseButton"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Composite"
-		Visible=true
-		Group="Appearance"
+		Group="OS X (Carbon)"
 		InitialValue="False"
 		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Frame"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="0"
 		Type="Integer"
 		EditorType="Enum"
@@ -209,13 +145,12 @@ End
 			"7 - Global Floating Window"
 			"8 - Sheet Window"
 			"9 - Metal Window"
-			"10 - Drawer Window"
 			"11 - Modeless Dialog"
 		#tag EndEnumValues
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="FullScreen"
-		Group="Appearance"
+		Group="Behavior"
 		InitialValue="False"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -223,7 +158,7 @@ End
 	#tag ViewProperty
 		Name="FullScreenButton"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="False"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -231,21 +166,21 @@ End
 	#tag ViewProperty
 		Name="HasBackColor"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		InitialValue="False"
 		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Height"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="400"
 		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="ImplicitInstance"
 		Visible=true
-		Group="Appearance"
+		Group="Behavior"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -255,33 +190,33 @@ End
 		Visible=true
 		Group="ID"
 		Type="String"
+		EditorType="String"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="LiveResize"
 		Visible=true
-		Group="Appearance"
+		Group="Behavior"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="MacProcID"
-		Visible=true
-		Group="Appearance"
+		Group="OS X (Carbon)"
 		InitialValue="0"
 		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="MaxHeight"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="32000"
 		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="MaximizeButton"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -289,20 +224,20 @@ End
 	#tag ViewProperty
 		Name="MaxWidth"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="32000"
 		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="MenuBar"
 		Visible=true
-		Group="Appearance"
+		Group="Menus"
 		Type="MenuBar"
 		EditorType="MenuBar"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="MenuBarVisible"
-		Group="Appearance"
+		Group="Behavior"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -310,14 +245,14 @@ End
 	#tag ViewProperty
 		Name="MinHeight"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="64"
 		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="MinimizeButton"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -325,7 +260,7 @@ End
 	#tag ViewProperty
 		Name="MinWidth"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="64"
 		Type="Integer"
 	#tag EndViewProperty
@@ -334,11 +269,12 @@ End
 		Visible=true
 		Group="ID"
 		Type="String"
+		EditorType="String"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Placement"
 		Visible=true
-		Group="Position"
+		Group="Behavior"
 		InitialValue="0"
 		Type="Integer"
 		EditorType="Enum"
@@ -353,7 +289,7 @@ End
 	#tag ViewProperty
 		Name="Resizeable"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -363,18 +299,19 @@ End
 		Visible=true
 		Group="ID"
 		Type="String"
+		EditorType="String"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Title"
 		Visible=true
-		Group="Appearance"
+		Group="Frame"
 		InitialValue="Untitled"
 		Type="String"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Visible"
 		Visible=true
-		Group="Appearance"
+		Group="Behavior"
 		InitialValue="True"
 		Type="Boolean"
 		EditorType="Boolean"
@@ -382,7 +319,7 @@ End
 	#tag ViewProperty
 		Name="Width"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="600"
 		Type="Integer"
 	#tag EndViewProperty
