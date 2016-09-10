@@ -1,53 +1,107 @@
-SQLdeLite 1.0.0 beta by 1701 Software
+SQLdeLite 
+by 1701 Software, Inc. 
+http://www.1701software.com
+=======================
 
-What is SQLdeLite?
+SQLdeLite is an open source library that allows you to speed up your database development with Xojo.
 
-SQLdeLite is a low level SQL database abstraction layer for the XOJO language being actively developed here, at 1701 software. It's primarily focused around the things that make managing and querying your databases difficult or time consuming. It is designed around our experience with various database systems and our belief that heavy ORM's are not good. They tend to lock you in to a very particular way of using your databases and generally are not well optimized.
-It’s designed to be a drop in replacement for the existing SQLiteDatabase and CubeSQLServer classes. All existing properties and methods should work out of the box. You will not have to change any of your existing code to start using SQLdeLite. MySQL and PostgreSQL are on the works.
+Highlights:
 
-What it can do?
+- Single drop in module that speeds up your development.
+- Build on top of the new Xojo framework. 
+- Full support for iOSSQLiteDatabase's on iOS! You can use the same business logic between projects despite using different database backends.
+- Full support for all Xojo supported databases. Enable databases that require plugins by setting the appropriate constant to True (example: PLUGIN_MSSQL_ENABLED).
+- Full support for cubeSQL. Make sure to enable support by changing the PLUGIN_CUBESQL_ENABLED constant to True.
+- Valentina database is also supported by virtue of the SQLdeLite.ParameterizeSQL() method. This converts your SQL query into a Valentina compatible query with bound parameters.
 
-Prepared Statements:
+The library does not expose any new database classes nor requires the usage of custom database adapters (as in "Active Record" from BKeeney Software).
+The module extends the built-in Xojo databases classes and provides you with two additional methods. These methods replace the default SQLSelect() and 
+SQLExecute() methods for your database of choice. 
 
-Currently if you wish to properly query a database you need to parameterize the query using prepared statements. Prepared statements provide both speed optimizations and protect you from SQL injection attacks. However, actually doing this for each database is a chore. SQLdeLite provides query helpers in the form of database methods (SQLdeLiteSelect and SQLdeLiteExecute) that rapidly speed up your development. You can now do something like:
+Why use over ActiveRecord?
 
-myDb.SQLdeLiteSelect("SELECT * FROM Users WHERE Username = #?# AND Password = #?#", txtUsername.Text, txtPassword.Text)
+- ActiveRecord can only load a record via it's primary key which is forced to be an integer. It has the ability to load an object from a RecordSet which SQLdeLite can also do automatically (see the Advanced Features topic below).
+- ActiveRecord is not available on iOS. SQLdeLite runs everywhere Xojo runs. Console, Desktop, Web, and iOS without any modifications. 
+- ActiveRecord requires you to use their database specific adapters. SQLdeLite extends the Xojo native databases .
+- ActiveRecord requires code generation using the commercial ARGen product or hand building your database classes. SQLdeLite can classes or dynamic objects via SQLdeLite.Record.
+- SQLdeLite is HALF the size contained inside a single module.
+- SQLdeLite is built on top of the new Xojo framework and ready for the future.
 
-This would return a RecordSet from your database. Behind the scenes it used prepared SQL statements appropriate for that database server to return the data.
+Methods: 
 
-Easier table schemas management:
+- SQLdeLiteSelect(=sqlStatementAsText, SQLdeLiteRecordObject)
+- SQLdeLiteExecute(sqlStatementAsText, SQLdeLiteRecordObject)
+- CreateInsertStatement(databaseObject, TableNameAsText, TableAndFieldNamesQuotedAsBoolean)
 
-It will assist you with creating and managing your table schemas through database migrations. By marking classes as an instance of a SQLdeLite.Table object you gain immediate schema capabilities. Public non-computed properties that are strings/integers/doubles will be compared with the table schema. If the table does not exist a "CreateTableSchema" event is raised in the database object.
+What is the "SQLdeLite.Record" class represented above as the SQLdeLiteRecordObject?
 
-If the table is missing particular fields or the data types do not match then a "UpdateTableSchema" event is raised. You can choose to update your schema or just return True. Again, the goal is flexibility and power, it does not force you to do anything. The table and class schemas are hashed and stored in the database object so subsequent queries do not involve introspection.
+Good question! Have you ever built a large library of classes that supports your business logic and thus you have properties mapped to your database model? 
+Isn't it frustruating managing the lifecycle of those objects? For instance you may initialize an instance of the object and fill some of its properties prior to doing 
+a look up to a database. You might fill most of the properties after loading the data from the database and thus the object is less useful before being loaded. Which
+properties should be available before/after you interact with the database?
 
-There is an example provided of using more complex types like dates. However the intent is to keep it low level. You should save Date.SQLDateTime as opposed to just Date. Perhaps use these classes as super's for more advanced classes with computed properties? Or use them in conjunction with your existing classes solely for the purpose of schema migrations and management.
+Or how about during development when you just want to create a SQL statement using a number of variables. Whether you store those variables as individual variables
+in your method or they are properties of an object you end up with some string concatenation gore looking like:
 
-Easier Inserts:
+Dim sql As Text
+sql = "SELECT * FROM Table WHERE Field = '" + variable1 + "' AND Field2 = " + variable2.ToText() + " AND Field3 = '" + variable3 + "';"
 
-If you spend a lot of time inserting data into your database and have an object mapped to a SQLdeLite.Table then inserting is super easy. For instance you can do:
+Some of you might do it the slightly faster way with an array and joining it at the end. Regardless this is dangerous for a number of reasons:
 
-Dim newUser As New User(myDb)
+- The database engine does not benefit from query optimizations made possible with prepared statements and binding parameters.
+- Easy to make mistakes as the developer as you try to concatenate the strings together properly. 
+- Easy to include more fields than necessary in the statement or possibly fields you do not have valid values for.
+- Your SQL statement is vulnerable to SQL injection because you are not properly escaping quotations characters.
 
-newUser.Username = "testuser"
+Introducing the SQLdeLite.Record class. You can initialize an instance of it or sub-class it and use as needed. With SQLdeLite.Record you can create dynamic objects 
+by filling the properties as you see fit without actually creating and building an object. Behind the scenes when you pass your instance of SQLdeLite.Record to SQLdeLIte
+the engine automatically converts all of your dynamic properties to SQL parameters. It then binds those parameters to a prepared statement appropriate for the 
+database engine you are currently using. PostgreSQL, Oracle, and cubeSQL all handle parameter binding in different ways and SQLdeLite abstracts those differences away.
 
-newUser.Password = "hashedPassword"
+Building SQL Statements:
 
-newUser.Insert()
+So in order to use SQLdeLite.Record and parameterize your SQL statement you can do the following.
 
-This is a nice little helper to save you some time. SQL Insert statements are largely the same and theres no point wasting time writing methods to insert every known possibility.
+----------
 
-Easier, standardized cross-db Prepared Statements syntax:
+Dim row As New SQLdeLite.Record
+row.Name = "Phillip Zedalis"
+row.Title = "Managing Developer"
+row.Company = "1701 Software, Inc."
 
-You don’t need multiple parameter insertion points in your SQL (those “?”) and a separated list of variables, the object can do it at once as:
+Dim sql As Text
+sql = "SELECT * FROM Users WHERE Name = $Name AND Title = $Title AND Company = $Company"
 
-newUser.Execute("UPDATE Users SET Password = #password# WHERE Username = #username#")
+Dim rs As RecordSet
+rs = db.SQLdeLiteSelect(sql, row)
 
-So while we don't like full on conventional ORM's we can use the schema info we already have to enhance the experience.
-We do this without boxing you into any corners, paradigms, etc.
+----------
 
-SQLdeLite does not write your queries for you. It just makes using SQL significantly more enjoyable.
+What happened behind the scenes is your new instantly created dynamic object was used to convert the SQL with $variables into a executable query for your 
+database engine. In order to use a property of your SQLdeLite.Record object you simply pass in the case-sensitive name of the property preceeded by a $ symbol.
 
-Enjoy!
+Advanced Features:
 
-1701 Software - http://www.1701software.com/
+The SQLdeLiteSelect method also supports filling the results of the RecordSet back to your SQLdeLite.Record object. You must True as the last parameter AND your 
+query must return only one result. Assuming both factors are true your SQLdeLite.Record object will gain new dynamic properties representing the values of every 
+column in the RecordSet. For example if we use the same "row" object as in the code example above and call the SQLdeLiteSelect method as so:
+
+rs = db.SQLdeLiteSelect(sql, row, True)
+
+The code above will actually loop through all the columns of your record and create dynamic properties in the row object. So despite never defining a "PhoneNumber"
+for instance if the record included it then you can now access it via:
+
+MsgBox(row.PhoneNumber)
+
+No looping through your fields and binding the values or creating an object for every possible query you may want to run.
+
+Valentina Support:
+
+The Valentina database engine is a fantastic database that I use in many projects. Unfortunately the VDatabase object does not inherit from the Xojo Database object 
+and thus the SQLdeLite extension methods are not available. However this turns out to be okay because Valentina has several different ways to query the engine/server 
+that vary depending on your needs. 
+
+Instead of using SQLdeLite to execute the queries you can simply use it to create your queries along with parameterized arrays suitable for Valentina. SQLdeLite is aware 
+of the Valentina specific way of binding SQL parameters and returns to you everything you need to execute your queries against Valentina.
+
+
