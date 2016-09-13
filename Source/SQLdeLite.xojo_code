@@ -1,7 +1,7 @@
 #tag Module
 Protected Module SQLdeLite
 	#tag Method, Flags = &h21, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit))
-		Private Function mQuery(db As Database, SelectText As Text, Parameters() As Auto, ExecuteOnly As Boolean = False) As RecordSet
+		Private Function mQuery(db As Database, SelectText As Text, Parameters() As SQLdeLite.Parameter, ExecuteOnly As Boolean = False) As RecordSet
 		  // Determine if we had any parameters subbed in. If not then call the underlying database SQLSelect method as there is nothing to process.
 		  If (Parameters.Ubound = -1) Then
 		    Return db.SQLSelect(SelectText)
@@ -34,7 +34,7 @@ Protected Module SQLdeLite
 		      
 		      // Determine what type of field this is.
 		      Dim __parameterInfo As Xojo.Introspection.TypeInfo
-		      __parameterInfo = Xojo.Introspection.GetType(Parameters(_count))
+		      __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		      
 		      If (__parameterInfo.FullName = "Boolean") Then
 		        _ps.BindType(_count, SQLitePreparedStatement.SQLITE_BOOLEAN)
@@ -61,7 +61,7 @@ Protected Module SQLdeLite
 		        
 		        // Determine what type of field this is.
 		        Dim __parameterInfo As Xojo.Introspection.TypeInfo
-		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count))
+		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		        
 		        If (__parameterInfo.FullName = "Double") Then
 		          _psCube.BindDouble(_count + 1, Parameters(_count))
@@ -86,7 +86,7 @@ Protected Module SQLdeLite
 		        
 		        // Determine what type of field this is.
 		        Dim __parameterInfo As Xojo.Introspection.TypeInfo
-		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count))
+		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		        
 		        If (__parameterInfo.FullName = "Date") Then
 		          _ps.BindType(_count, MySQLPreparedStatement.MYSQL_TYPE_DATE)
@@ -111,7 +111,7 @@ Protected Module SQLdeLite
 		      
 		      If (_dbInfo.FullName = "PostgreSQLDatabase") Then
 		        
-		        _ps.Bind(_count, Parameters(_count))
+		        _ps.Bind(_count, Parameters(_count).Value)
 		        
 		      End If
 		      
@@ -124,7 +124,7 @@ Protected Module SQLdeLite
 		        
 		        // Determine what type of field this is.
 		        Dim __parameterInfo As Xojo.Introspection.TypeInfo
-		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count))
+		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		        
 		        If (__parameterInfo.FullName = "Date") Then
 		          _ps.BindType(_count, ODBCPreparedStatement.ODBC_TYPE_DATE)
@@ -151,7 +151,7 @@ Protected Module SQLdeLite
 		        
 		        // Determine what type of field this is.
 		        Dim __parameterInfo As Xojo.Introspection.TypeInfo
-		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count))
+		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		        
 		        If (__parameterInfo.FullName = "Date") Then
 		          _ps.BindType(_count, MSSQLServerPreparedStatement.MSSQLSERVER_TYPE_DATE)
@@ -178,7 +178,7 @@ Protected Module SQLdeLite
 		        
 		        // Determine what type of field this is.
 		        Dim __parameterInfo As Xojo.Introspection.TypeInfo
-		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count))
+		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		        
 		        If (__parameterInfo.FullName = "Date") Then
 		          _ps.BindType(_count, OracleSQLPreparedStatement.SQL_TYPE_DATE)
@@ -205,7 +205,7 @@ Protected Module SQLdeLite
 		    
 		    For _count As Integer = 0 To Parameters.Ubound
 		      
-		      _ps.Bind(_count, Parameters(_count))
+		      _ps.Bind(_count, Parameters(_count).Value)
 		      
 		    Next
 		    
@@ -667,9 +667,9 @@ Protected Module SQLdeLite
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ParameterizeSQL(db As Object, ByRef SQLText As Text, Record As SQLdeLite.Record) As Auto()
+		Function ParameterizeSQL(db As Object, ByRef SQLText As Text, Record As SQLdeLite.Record) As SQldeLite.Parameter()
 		  // Create array of bound parameters
-		  Dim _parameters() As Auto
+		  Dim _parameters() As SQLdeLite.Parameter
 		  
 		  // Create a new SelectText variable
 		  Dim _selectText As Text
@@ -704,8 +704,14 @@ Protected Module SQLdeLite
 		    Dim __field As Text
 		    __field = "$" + _entry.Key
 		    
+		    // Create SQLdeLite.Parameter
+		    Dim __parameter As New SQLdeLite.Parameter
+		    __parameter.Name = _entry.Key
+		    __parameter.Value = _entry.Value
+		    __parameter.Position = _selectText.IndexOf(__field)
+		    
 		    // Replace the variable with a question mark (for prepared statements) and add the value to the collection of bound parameters.
-		    If (_selectText.IndexOf(__field) > 0) Then
+		    If (__parameter.Position > 0) Then
 		      
 		      #If TargetIOS <> True Then
 		        
@@ -731,7 +737,7 @@ Protected Module SQLdeLite
 		      
 		      _selectText = _selectText.ReplaceAll(__field, _replacement)
 		      
-		      _parameters.Append(_entry.Value)
+		      _parameters.Append(__parameter)
 		      
 		    End If
 		    
@@ -750,8 +756,14 @@ Protected Module SQLdeLite
 		      Dim __field As Text
 		      __field = "$" + _property.Name
 		      
+		      // Create SQLdeLite.Parameter
+		      Dim __parameter As New SQLdeLite.Parameter
+		      __parameter.Name = _property.Name
+		      __parameter.Value = _property.Value(Record)
+		      __parameter.Position = _selectText.IndexOf(__field)
+		      
 		      // Replace the variable with a question mark (for prepared statements) and add the value to the collection of bound parameters.
-		      If (_selectText.IndexOf(__field) > 0) Then
+		      If (__parameter.Position > 0) Then
 		        
 		        #If TargetIOS <> True Then
 		          
@@ -776,7 +788,7 @@ Protected Module SQLdeLite
 		        
 		        _selectText = _selectText.ReplaceAll(__field, _replacement)
 		        
-		        _parameters.Append(_property.Value(Record))
+		        _parameters.Append(__parameter)
 		        
 		      End If
 		      
@@ -784,11 +796,29 @@ Protected Module SQLdeLite
 		    
 		  Next
 		  
+		  // Let's sort the parameters
+		  Dim _positions() As Integer
+		  For Each __parameter As SQLdeLite.Parameter In _parameters
+		    _positions.Append(__parameter.Position)
+		  Next
+		  _positions.Sort()
+		  
+		  Dim _parametersSorted() As SQLdeLite.Parameter
+		  For Each _parameterPosition As Integer In _positions
+		    For Each __parameter As SQLdeLite.Parameter In _parameters
+		      If (__parameter.Position = _parameterPosition) Then
+		        _parametersSorted.Append(__parameter)
+		      End If
+		    Next
+		  Next
+		  
+		  Redim _parameters(-1)
+		  
 		  // Update the SQLText property
 		  SQLText = _selectText
 		  
 		  // Return the parameter array
-		  Return _parameters
+		  Return _parametersSorted
 		End Function
 	#tag EndMethod
 
@@ -796,7 +826,7 @@ Protected Module SQLdeLite
 		Function ParameterizeSQL_Variant(db As Object, ByRef SQLText As Text, Record As SQLdeLite.Record) As Variant()
 		  // Create array of bound parameters
 		  Dim _parameters() As Variant
-		  Dim _parametersAuto() As Auto
+		  Dim _parametersAuto() As SQLdeLite.Parameter
 		  
 		  // Call the ParameterizeSQL Auto version
 		  _parametersAuto = ParameterizeSQL(db, SQLText, Record)
@@ -821,7 +851,7 @@ Protected Module SQLdeLite
 		  End If
 		  
 		  // Create array of bound parameters
-		  Dim _parameters() As Auto
+		  Dim _parameters() As SQLdeLite.Parameter
 		  
 		  // Create the parameters array
 		  _parameters = ParameterizeSQL(db, SQLText, Record)
@@ -871,7 +901,7 @@ Protected Module SQLdeLite
 		  End If
 		  
 		  // Create array of bound parameters
-		  Dim _parameters() As Auto
+		  Dim _parameters() As SQLdeLite.Parameter
 		  
 		  // Create the parameters array
 		  _parameters = ParameterizeSQL(db, SQLText, Record)
@@ -1117,6 +1147,7 @@ Protected Module SQLdeLite
 		
 		Version 2.1609.130 - September 13th, 2016
 		- Added String support to support old framework Xojo classes.
+		- Fixed issue with positioning of parameters.
 		Version 2.1609.100 - September 10th, 2016
 		Version 1.0.0 - June 6th, 2014
 	#tag EndNote

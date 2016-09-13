@@ -74,9 +74,11 @@ End
 	#tag Event
 		Sub Action()
 		  Dim _lastName As Text = "Tremblay"
+		  Dim _firstName As Text = "François"
 		  
 		  Dim _record As New SQLdeLite.Record
 		  _record.LastName = _lastName
+		  _record.FirstName = _firstName
 		  
 		  Dim _db As New SQLiteDatabase
 		  _db.DatabaseFile = SpecialFolder.Desktop.Child("Chinook_Sqlite.sqlite")
@@ -86,7 +88,7 @@ End
 		  End If
 		  
 		  Dim _rs As RecordSet
-		  _rs = _db.SQLdeLiteSelect("SELECT * FROM Customer WHERE LastName = $LastName", _record, True)
+		  _rs = _db.SQLdeLiteSelect("SELECT * FROM Customer WHERE LastName = $LastName AND FirstName = $FirstName", _record, True)
 		  
 		  If (_rs <> Nil) Then
 		    MsgBox(_rs.RecordCount.ToText() + " Records Found")
