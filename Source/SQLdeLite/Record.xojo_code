@@ -73,7 +73,7 @@ Protected Class Record
 		        Dim __temp As Integer
 		        __temp = _entry.Value
 		        _sql.Append(__temp.ToText())
-		       ElseIf (__entryInfo.FullName = "Double") Then
+		      ElseIf (__entryInfo.FullName = "Double") Then
 		        Dim __temp As Double
 		        __temp = _entry.Value
 		        _sql.Append(__temp.ToText())
@@ -211,8 +211,20 @@ Protected Class Record
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit))
+		Sub Operator_Lookup(Name As Text, Assigns Value As String)
+		  pDictionary_Properties.Value(Name) = Value
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub Operator_Lookup(Name As Text, Assigns Value As Text)
+		  pDictionary_Properties.Value(Name) = Value
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Operator_Lookup(Name As Text, Assigns Value As UInt64)
 		  pDictionary_Properties.Value(Name) = Value
 		End Sub
 	#tag EndMethod

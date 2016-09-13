@@ -73,8 +73,10 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
+		  Dim _lastName As Text = "Tremblay"
+		  
 		  Dim _record As New SQLdeLite.Record
-		  _record.LastName = "Tremblay"
+		  _record.LastName = _lastName
 		  
 		  Dim _db As New SQLiteDatabase
 		  _db.DatabaseFile = SpecialFolder.Desktop.Child("Chinook_Sqlite.sqlite")
