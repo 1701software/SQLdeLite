@@ -44,6 +44,8 @@ Protected Module SQLdeLite
 		        _ps.BindType(_count, SQLitePreparedStatement.SQLITE_INT64)
 		      ElseIf (__parameterInfo.FullName = "Int32") Then
 		        _ps.BindType(_count, SQLitePreparedStatement.SQLITE_INTEGER)
+		      ElseIf (__parameterInfo.FullName = "String") Then
+		        _ps.BindType(_count, SQLitePreparedStatement.SQLITE_TEXT)
 		      ElseIf (__parameterInfo.FullName = "Text") Then
 		        _ps.BindType(_count, SQLitePreparedStatement.SQLITE_TEXT)
 		      End If
@@ -67,6 +69,8 @@ Protected Module SQLdeLite
 		          _psCube.BindInt64(_count + 1, Parameters(_count))
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
 		          _psCube.BindInt(_count + 1, Parameters(_count))
+		        ElseIf (__parameterInfo.FullName = "String") Then
+		          _psCube.BindText(_count + 1, Parameters(_count))
 		        ElseIf (__parameterInfo.FullName = "Text") Then
 		          _psCube.BindText(_count + 1, Parameters(_count))
 		        End If
@@ -92,6 +96,8 @@ Protected Module SQLdeLite
 		          _ps.BindType(_count, MySQLPreparedStatement.MYSQL_TYPE_LONGLONG)
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
 		          _ps.BindType(_count, MySQLPreparedStatement.MYSQL_TYPE_LONG)
+		        ElseIf (__parameterInfo.FullName = "String") Then
+		          _ps.BindType(_count, MySQLPreparedStatement.MYSQL_TYPE_STRING)
 		        ElseIf (__parameterInfo.FullName = "Text") Then
 		          _ps.BindType(_count, MySQLPreparedStatement.MYSQL_TYPE_STRING)
 		        End If
@@ -128,6 +134,8 @@ Protected Module SQLdeLite
 		          _ps.BindType(_count, ODBCPreparedStatement.ODBC_TYPE_BIGINT)
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
 		          _ps.BindType(_count, ODBCPreparedStatement.ODBC_TYPE_INTEGER)
+		        ElseIf (__parameterInfo.FullName = "String") Then
+		          _ps.BindType(_count, ODBCPreparedStatement.ODBC_TYPE_STRING)
 		        ElseIf (__parameterInfo.FullName = "Text") Then
 		          _ps.BindType(_count, ODBCPreparedStatement.ODBC_TYPE_STRING)
 		        End If
@@ -153,6 +161,8 @@ Protected Module SQLdeLite
 		          _ps.BindType(_count, MSSQLServerPreparedStatement.MSSQLSERVER_TYPE_BIGINT)
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
 		          _ps.BindType(_count, MSSQLServerPreparedStatement.MSSQLSERVER_TYPE_INT)
+		        ElseIf (__parameterInfo.FullName = "String") Then
+		          _ps.BindType(_count, MSSQLServerPreparedStatement.MSSQLSERVER_TYPE_STRING)
 		        ElseIf (__parameterInfo.FullName = "Text") Then
 		          _ps.BindType(_count, MSSQLServerPreparedStatement.MSSQLSERVER_TYPE_STRING)
 		        End If
@@ -178,6 +188,8 @@ Protected Module SQLdeLite
 		          _ps.BindType(_count, OracleSQLPreparedStatement.SQL_TYPE_INTEGER)
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
 		          _ps.BindType(_count, OracleSQLPreparedStatement.SQL_TYPE_INTEGER)
+		        ElseIf (__parameterInfo.FullName = "String") Then
+		          _ps.BindType(_count, OracleSQLPreparedStatement.SQL_TYPE_STRING)
 		        ElseIf (__parameterInfo.FullName = "Text") Then
 		          _ps.BindType(_count, OracleSQLPreparedStatement.SQL_TYPE_STRING)
 		        End If
@@ -1103,6 +1115,8 @@ Protected Module SQLdeLite
 		SQLdeLite Release Notes
 		===================
 		
+		Version 2.1609.130 - September 13th, 2016
+		- Added String support to support old framework Xojo classes.
 		Version 2.1609.100 - September 10th, 2016
 		Version 1.0.0 - June 6th, 2014
 	#tag EndNote
