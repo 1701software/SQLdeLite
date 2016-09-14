@@ -211,12 +211,6 @@ Protected Class Record
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit))
-		Sub Operator_Lookup(Name As Text, Assigns Value As String)
-		  pDictionary_Properties.Value(Name) = Value
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Operator_Lookup(Name As Text, Assigns Value As Text)
 		  pDictionary_Properties.Value(Name) = Value
@@ -225,6 +219,12 @@ Protected Class Record
 
 	#tag Method, Flags = &h0
 		Sub Operator_Lookup(Name As Text, Assigns Value As UInt64)
+		  pDictionary_Properties.Value(Name) = Value
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit))
+		Sub Operator_Lookup_STRINGSUPPORT(Name As Text, Assigns Value As String)
 		  pDictionary_Properties.Value(Name) = Value
 		End Sub
 	#tag EndMethod

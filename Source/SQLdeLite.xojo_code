@@ -1125,7 +1125,8 @@ Protected Module SQLdeLite
 		===================
 		
 		Version 2.1609.130 - September 13th, 2016
-		- Added String support to support old framework Xojo classes.
+		- Added String support to support old framework Xojo classes. To enable string support for TextLiteral's navigate to the SQLDeLite.Record class and
+		   rename the 'Operator_Lookup_STRINGSUPPORT' method to just 'Operator_Lookup'. It will join the other overloaded methods and now String support is enabled.
 		- Fixed issue with positioning of parameters.
 		Version 2.1609.100 - September 10th, 2016
 		Version 1.0.0 - June 6th, 2014
