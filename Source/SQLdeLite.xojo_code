@@ -823,27 +823,6 @@ Protected Module SQLdeLite
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit))
-		Function ParameterizeSQL_Variant(db As Object, ByRef SQLText As Text, Record As SQLdeLite.Record) As Variant()
-		  // Create array of bound parameters
-		  Dim _parameters() As Variant
-		  Dim _parametersAuto() As SQLdeLite.Parameter
-		  
-		  // Call the ParameterizeSQL Auto version
-		  _parametersAuto = ParameterizeSQL(db, SQLText, Record)
-		  
-		  // Convert Auto to Variant
-		  For Each _parameter As Auto In _parametersAuto
-		    Dim _parameterVariant As Variant
-		    _parameterVariant = _parameter
-		    _parameters.Append(_parameterVariant)
-		  Next
-		  
-		  // Return the parameter array
-		  Return _parameters
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit))
 		Sub SQLdeLiteExecute(Extends db As Database, SQLText As Text, Record As SQLdeLite.Record)
 		  // Verify that the Record object is not Nil. If it's Nil then just call the underlying database SQLSelect method as there is nothing to process.
 		  If (Record = Nil) Then
