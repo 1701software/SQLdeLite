@@ -64,15 +64,15 @@ Protected Module SQLdeLite
 		        __parameterInfo = Xojo.Introspection.GetType(Parameters(_count).Value)
 		        
 		        If (__parameterInfo.FullName = "Double") Then
-		          _psCube.BindDouble(_count + 1, Parameters(_count))
+		          _psCube.BindDouble(_count + 1, Parameters(_count).Value)
 		        ElseIf (__parameterInfo.FullName = "Int64") Then
-		          _psCube.BindInt64(_count + 1, Parameters(_count))
+		          _psCube.BindInt64(_count + 1, Parameters(_count).Value)
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
-		          _psCube.BindInt(_count + 1, Parameters(_count))
+		          _psCube.BindInt(_count + 1, Parameters(_count).Value)
 		        ElseIf (__parameterInfo.FullName = "String") Then
-		          _psCube.BindText(_count + 1, Parameters(_count))
+		          _psCube.BindText(_count + 1, Parameters(_count).Value)
 		        ElseIf (__parameterInfo.FullName = "Text") Then
-		          _psCube.BindText(_count + 1, Parameters(_count))
+		          _psCube.BindText(_count + 1, Parameters(_count).Value)
 		        End If
 		        
 		      End If
