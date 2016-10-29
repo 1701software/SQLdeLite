@@ -37,6 +37,12 @@ Protected Class Parameter
 		#tag ViewProperty
 			Name="Name"
 			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Position"
+			Group="Behavior"
+			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty

@@ -796,7 +796,23 @@ Protected Module SQLdeLite
 		    
 		  Next
 		  
-		  // Let's sort the parameters
+		  // Update the SQLText property
+		  SQLText = _selectText
+		  
+		  // PostgreSQL and Valentina do not require parameter sorting as they use numbered parameters which match the positions of the parameters in the dictionary.
+		  #If TargetIOS <> True Then
+		    
+		    // PostgreSQLDatabase requires a parameter number (1-based)
+		    If (_dbInfo.FullName = "PostgreSQLDatabase" Or _dbInfo.FullName = "VDatabase") Then
+		      
+		      // Return the parameter array
+		      Return _parameters
+		      
+		    End If
+		    
+		  #EndIf
+		  
+		  // Let's sort the parameters for databases where they expect the parameters to be arranged as they appear.
 		  Dim _positions() As Integer
 		  For Each __parameter As SQLdeLite.Parameter In _parameters
 		    _positions.Append(__parameter.Position)
@@ -813,9 +829,6 @@ Protected Module SQLdeLite
 		  Next
 		  
 		  Redim _parameters(-1)
-		  
-		  // Update the SQLText property
-		  SQLText = _selectText
 		  
 		  // Return the parameter array
 		  Return _parametersSorted
@@ -1124,6 +1137,8 @@ Protected Module SQLdeLite
 		SQLdeLite Release Notes
 		===================
 		
+		Version 2.1610.290 - October 30th, 2016
+		- Fixed issue with positioning parameters for PostgreSQL and Valentina databases (they use numbered parameters and hence do not need to be sorted).
 		Version 2.1609.130 - September 13th, 2016
 		- Added String support to support old framework Xojo classes. To enable string support for TextLiteral's navigate to the SQLDeLite.Record class and
 		   rename the 'Operator_Lookup_STRINGSUPPORT' method to just 'Operator_Lookup'. It will join the other overloaded methods and now String support is enabled.
@@ -1139,7 +1154,7 @@ Protected Module SQLdeLite
 	#tag Constant, Name = PLUGIN_MSSQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = PLUGIN_MYSQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"True", Scope = Public
+	#tag Constant, Name = PLUGIN_MYSQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = PLUGIN_ODBC_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
@@ -1148,7 +1163,7 @@ Protected Module SQLdeLite
 	#tag Constant, Name = PLUGIN_ORACLE_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = PLUGIN_POSTGRESQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"True", Scope = Public
+	#tag Constant, Name = PLUGIN_POSTGRESQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
 	#tag EndConstant
 
 

@@ -1,12 +1,12 @@
 Type=Desktop
 RBProjectVersion=2016.03
 MinIDEVersion=20070100
-Class=Record;SQLdeLite/Record.xojo_code;&h5A2367FF;&h332D3FFF;false
 Class=App;App.xojo_code;&h36F27FFF;&h0;false
 Window=Window1;Window1.xojo_window;&h4BD4EFFF;&h0;false
 MenuBar=MainMenuBar;MainMenuBar.xojo_menu;&h6E9667FF;&h0;false
 Module=SQLdeLite;SQLdeLite.xojo_code;&h332D3FFF;&h0;false
 BuildSteps=Build Automation;Build Automation.xojo_code;&h1566BFFF;&h0;false
+Class=Record;SQLdeLite/Record.xojo_code;&h5A2367FF;&h332D3FFF;false
 Class=Parameter;SQLdeLite/Parameter.xojo_code;&h270EFFFF;&h332D3FFF;false
 DefaultWindow=Window1
 AppMenuBar=MainMenuBar
