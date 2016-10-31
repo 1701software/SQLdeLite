@@ -82,14 +82,14 @@ Protected Class Record
 		          Dim __temp As String
 		          __temp = _entry.Value
 		          _sql.Append("'")
-		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText())
+		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "\'"))
 		          _sql.Append("'")
 		        #EndIf
 		      ElseIf (__entryInfo.FullName = "Text") Then
 		        Dim __temp As Text
 		        __temp = _entry.Value
 		        _sql.Append("'")
-		        _sql.Append(__temp)
+		        _sql.Append(__temp.ReplaceAll("'", "\'"))
 		        _sql.Append("'")
 		      End If
 		      
@@ -132,12 +132,12 @@ Protected Class Record
 		        #If TargetIOS = False Then
 		          Dim __temp As String
 		          __temp = _property.Value(me)
-		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "''"))
+		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "\'"))
 		        #EndIf
 		      ElseIf (__entryInfo.FullName = "Text") Then
 		        Dim __temp As Text
 		        __temp = _property.Value(me)
-		        _sql.Append(__temp.ReplaceAll("'", "''"))
+		        _sql.Append(__temp.ReplaceAll("'", "\'"))
 		      End If
 		      _sql.Append(", ")
 		      

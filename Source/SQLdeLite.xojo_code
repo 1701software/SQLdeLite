@@ -1137,7 +1137,9 @@ Protected Module SQLdeLite
 		SQLdeLite Release Notes
 		===================
 		
-		Version 2.1610.290 - October 30th, 2016
+		Version 2.1610.310 - October 31st, 2016
+		- Fixed issue with SQLdeLite.Record.CreateInsertStatement() where strings with ' in it were not properly escaped breaking the query.
+		Version 2.1610.290 - October 29th, 2016
 		- Fixed issue with positioning parameters for PostgreSQL and Valentina databases (they use numbered parameters and hence do not need to be sorted).
 		Version 2.1609.130 - September 13th, 2016
 		- Added String support to support old framework Xojo classes. To enable string support for TextLiteral's navigate to the SQLDeLite.Record class and
