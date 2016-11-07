@@ -17,6 +17,10 @@ Protected Module SQLdeLite
 		  Dim _dbInfo As Xojo.Introspection.TypeInfo
 		  _dbInfo = Xojo.Introspection.GetType(db)
 		  
+		  While (_dbInfo.BaseType.FullName <> "Database")
+		    _dbInfo = _dbInfo.BaseType
+		  Wend
+		  
 		  // Create a prepared SQL statement appropriate for the current database engine.
 		  If (_dbInfo.FullName = "CubeSQLServer") Then
 		    #If SQLdeLite.PLUGIN_CUBESQL_ENABLED = True Then
@@ -679,6 +683,10 @@ Protected Module SQLdeLite
 		  Dim _dbInfo As Xojo.Introspection.TypeInfo
 		  _dbInfo = Xojo.Introspection.GetType(db)
 		  
+		  While (_dbInfo.BaseType.FullName <> "Database")
+		    _dbInfo = _dbInfo.BaseType
+		  Wend
+		  
 		  // Create replacement variable. Some databases use a different variable.
 		  Dim _replacement As Text = "?"
 		  Dim _replacementCount As Integer = 1
@@ -691,7 +699,7 @@ Protected Module SQLdeLite
 		    If (_dbInfo.FullName = "OracleDatabase") Then
 		      _replacement = ":"
 		    End If
-		    If (_dbInfo.FullName = "VDatabase") Then
+		    If (_dbInfo.FullName = "CubeSQLServer") Then
 		      _replacement = ":"
 		    End If
 		    
@@ -727,8 +735,8 @@ Protected Module SQLdeLite
 		          _replacement = ":" + __key
 		        End If
 		        
-		        // VDatabase (Valentina) requires a parameter number (1-based)
-		        If (_dbInfo.FullName = "VDatabase") Then
+		        // CubeSQLServer (Valentina) requires a parameter number (1-based)
+		        If (_dbInfo.FullName = "CubeSQLServer") Then
 		          _replacement = ":" + _replacementCount.ToText()
 		          _replacementCount = _replacementCount + 1
 		        End If
@@ -778,8 +786,8 @@ Protected Module SQLdeLite
 		            _replacement = ":" + _property.Name
 		          End If
 		          
-		          // VDatabase (Valentina) requires a parameter number (1-based)
-		          If (_dbInfo.FullName = "VDatabase") Then
+		          // CubeSQLServer (Valentina) requires a parameter number (1-based)
+		          If (_dbInfo.FullName = "CubeSQLServer") Then
 		            _replacement = ":" + _replacementCount.ToText()
 		            _replacementCount = _replacementCount + 1
 		          End If
@@ -803,7 +811,7 @@ Protected Module SQLdeLite
 		  #If TargetIOS <> True Then
 		    
 		    // PostgreSQLDatabase requires a parameter number (1-based)
-		    If (_dbInfo.FullName = "PostgreSQLDatabase" Or _dbInfo.FullName = "VDatabase") Then
+		    If (_dbInfo.FullName = "PostgreSQLDatabase") Then
 		      
 		      // Return the parameter array
 		      Return _parameters
@@ -1096,7 +1104,7 @@ Protected Module SQLdeLite
 		
 		Valentina Support:
 		
-		The Valentina database engine is a fantastic database that I use in many projects. Unfortunately the VDatabase object does not inherit from the Xojo Database object 
+		The Valentina database engine is a fantastic database that I use in many projects. Unfortunately the CubeSQLServer object does not inherit from the Xojo Database object 
 		and thus the SQLdeLite extension methods are not available. However this turns out to be okay because Valentina has several different ways to query the engine/server 
 		that vary depending on your needs. 
 		
@@ -1137,6 +1145,11 @@ Protected Module SQLdeLite
 		SQLdeLite Release Notes
 		===================
 		
+		Version 2.1611.70 - November 7th, 2016
+		- The SQLdeLite.Record.CreateInsertStatement() method now escapes single quotes properly.
+		- Int64's are handled property in 64-bit builds.
+		- cubeSQL does required ordered parameters.
+		- Introspection now uses the base type of the database object. This allows you to sub-class the database class without issue.
 		Version 2.1610.310 - October 31st, 2016
 		- Fixed issue with SQLdeLite.Record.CreateInsertStatement() where strings with ' in it were not properly escaped breaking the query.
 		Version 2.1610.290 - October 29th, 2016
@@ -1150,7 +1163,7 @@ Protected Module SQLdeLite
 	#tag EndNote
 
 
-	#tag Constant, Name = PLUGIN_CUBESQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
+	#tag Constant, Name = PLUGIN_CUBESQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"True", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = PLUGIN_MSSQL_ENABLED, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public

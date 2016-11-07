@@ -82,14 +82,14 @@ Protected Class Record
 		          Dim __temp As String
 		          __temp = _entry.Value
 		          _sql.Append("'")
-		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "\'"))
+		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "''"))
 		          _sql.Append("'")
 		        #EndIf
 		      ElseIf (__entryInfo.FullName = "Text") Then
 		        Dim __temp As Text
 		        __temp = _entry.Value
 		        _sql.Append("'")
-		        _sql.Append(__temp.ReplaceAll("'", "\'"))
+		        _sql.Append(__temp.ReplaceAll("'", "''"))
 		        _sql.Append("'")
 		      End If
 		      
@@ -132,12 +132,12 @@ Protected Class Record
 		        #If TargetIOS = False Then
 		          Dim __temp As String
 		          __temp = _property.Value(me)
-		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "\'"))
+		          _sql.Append(DefineEncoding(__temp, Encodings.UTF8).ToText().ReplaceAll("'", "''"))
 		        #EndIf
 		      ElseIf (__entryInfo.FullName = "Text") Then
 		        Dim __temp As Text
 		        __temp = _property.Value(me)
-		        _sql.Append(__temp.ReplaceAll("'", "\'"))
+		        _sql.Append(__temp.ReplaceAll("'", "''"))
 		      End If
 		      _sql.Append(", ")
 		      
@@ -199,13 +199,13 @@ Protected Class Record
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit or Target64Bit)) or  (TargetWeb and (Target32Bit or Target64Bit)) or  (TargetDesktop and (Target32Bit or Target64Bit)) or  (TargetIOS and (Target32Bit or Target64Bit))
 		Sub Operator_Lookup(Name As Text, Assigns Value As Int64)
 		  pDictionary_Properties.Value(Name) = Value
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = (TargetConsole and (Target32Bit)) or  (TargetWeb and (Target32Bit)) or  (TargetDesktop and (Target32Bit)) or  (TargetIOS and (Target32Bit))
 		Sub Operator_Lookup(Name As Text, Assigns Value As Integer)
 		  pDictionary_Properties.Value(Name) = Value
 		End Sub
