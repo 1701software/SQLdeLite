@@ -74,9 +74,21 @@ Protected Module SQLdeLite
 		        ElseIf (__parameterInfo.FullName = "Int32") Then
 		          _psCube.BindInt(_count + 1, Parameters(_count).Value)
 		        ElseIf (__parameterInfo.FullName = "String") Then
-		          _psCube.BindText(_count + 1, Parameters(_count).Value)
+		          Dim ___valueString As String
+		          ___valueString = Parameters(_count).Value
+		          If (___valueString.Len = 0) Then // NULL the field if there is no String value as cubeSQL plugin will croak.
+		            _psCube.BindNull(_count + 1)
+		          Else
+		            _psCube.BindText(_count + 1, Parameters(_count).Value)
+		          End If
 		        ElseIf (__parameterInfo.FullName = "Text") Then
-		          _psCube.BindText(_count + 1, Parameters(_count).Value)
+		          Dim ___valueText As Text
+		          ___valueText = Parameters(_count).Value
+		          If (___valueText.Length = 0) Then // NULL the field if there is no String value as cubeSQL plugin will croak.
+		            _psCube.BindNull(_count + 1)
+		          Else
+		            _psCube.BindText(_count + 1,Parameters(_count).Value)
+		          End If
 		        End If
 		        
 		      End If
@@ -1145,6 +1157,8 @@ Protected Module SQLdeLite
 		SQLdeLite Release Notes
 		===================
 		
+		Version 2.170122.0 - January 22nd, 2017
+		- cubeSQL plugin will freeze up when trying to bind empty String/Text parameters. Offset this by binding Null if the String/Text field is blank.
 		Version 2.1611.70 - November 7th, 2016
 		- The SQLdeLite.Record.CreateInsertStatement() method now escapes single quotes properly.
 		- Int64's are handled property in 64-bit builds.

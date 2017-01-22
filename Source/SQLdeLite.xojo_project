@@ -1,5 +1,5 @@
 Type=Desktop
-RBProjectVersion=2016.03
+RBProjectVersion=2016.041
 MinIDEVersion=20070100
 Class=App;App.xojo_code;&h36F27FFF;&h0;false
 Window=Window1;Window1.xojo_window;&h4BD4EFFF;&h0;false
@@ -39,5 +39,6 @@ OSXBundleID=com.redrockforensics.myapp
 DebuggerCommandLine=
 UseGDIPlus=False
 UseBuildsFolder=True
+CopyRedistNextToWindowsEXE=False
 IsWebProject=False
 OptimizationLevel=0
