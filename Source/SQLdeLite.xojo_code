@@ -728,7 +728,7 @@ Protected Module SQLdeLite
 		    Dim __parameter As New SQLdeLite.Parameter
 		    __parameter.Name = _entry.Key
 		    __parameter.Value = _entry.Value
-		    __parameter.Position = _selectText.IndexOf(__field)
+		    __parameter.Position = SQLText.IndexOf(__field)
 		    
 		    // Replace the variable with a question mark (for prepared statements) and add the value to the collection of bound parameters.
 		    If (__parameter.Position > 0) Then
@@ -780,7 +780,7 @@ Protected Module SQLdeLite
 		      Dim __parameter As New SQLdeLite.Parameter
 		      __parameter.Name = _property.Name
 		      __parameter.Value = _property.Value(Record)
-		      __parameter.Position = _selectText.IndexOf(__field)
+		      __parameter.Position = SQLText.IndexOf(__field)
 		      
 		      // Replace the variable with a question mark (for prepared statements) and add the value to the collection of bound parameters.
 		      If (__parameter.Position > 0) Then
@@ -1157,6 +1157,8 @@ Protected Module SQLdeLite
 		SQLdeLite Release Notes
 		===================
 		
+		Version 2.170213.0 - February 13nd, 2017
+		- Critical update to how parameters are ordered. Complex queries may have failed due to parameters not binding correctly. 
 		Version 2.170122.0 - January 22nd, 2017
 		- cubeSQL plugin will freeze up when trying to bind empty String/Text parameters. Offset this by binding Null if the String/Text field is blank.
 		Version 2.1611.70 - November 7th, 2016
